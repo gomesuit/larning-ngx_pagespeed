@@ -68,3 +68,32 @@ systemctl daemon-reload
 
 # set nginx.conf
 \cp -f /vagrant/settings/nginx.conf /etc/nginx/nginx.conf
+
+# install docker
+yum install -y yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --enable docker-ce-edge
+yum-config-manager --disable docker-ce-edge
+yum makecache fast
+yum install -y docker-ce
+systemctl start docker
+#docker run --rm hello-world
+
+# install docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+# run memcached
+\cp -r /vagrant/settings/docker-compose.yml ~/
+cd
+docker-compose up -d
+
+# install memcached-cli
+curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+python get-pip.py
+pip install memcache-cli
+# get_stats items
+# get_stats cachedump 1 100
+
+# run nginx
+systemctl start nginx

@@ -1,0 +1,10 @@
+version: '2'
+services:
+  memcached:
+    image: memcached
+    command: memcached -m 1024
+    ports:
+      - "127.0.0.1:11211:11211"
+    environment:
+      - MYSQL_DATABASE=chai
+      - MYSQL_ROOT_PASSWORD=rootpasswd
