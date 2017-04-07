@@ -44,6 +44,7 @@ cd nginx-${NGINX_VERSION}/
 make
 make install
 
+# create nginx user
 groupadd --gid 911 nginx
 useradd --gid nginx \
         --uid 995 \
@@ -53,14 +54,17 @@ useradd --gid nginx \
         --system \
         --comment "Nginx web server" nginx
 
+# create directory
 mkdir -p /var/lib/nginx/tmp/client_body
 mkdir -p /var/lib/nginx/tmp/proxy
 chown -R nginx.nginx /var/lib/nginx
 
-# logrotate
+# set logrotate
 \cp -f /vagrant/settings/logrotate.nginx /etc/logrotate.d/nginx
 
-# setting nginx.service
+# set nginx.service
 \cp -f /vagrant/settings/nginx.service /usr/lib/systemd/system/nginx.service
 systemctl daemon-reload
 
+# set nginx.conf
+\cp -f /vagrant/settings/nginx.conf /etc/nginx/nginx.conf
