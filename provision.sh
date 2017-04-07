@@ -1,10 +1,6 @@
 #!/bin/bash
 
-
-echo hello
-
-
-
+# install nps
 yum install -y gcc-c++ pcre-devel zlib-devel make unzip
 NPS_VERSION=1.11.33.4
 cd
@@ -16,7 +12,7 @@ psol_url=https://dl.google.com/dl/page-speed/psol/${NPS_VERSION}.tar.gz
 wget ${psol_url}
 tar -xzvf $(basename ${psol_url})
 
-
+# install nginx
 NGINX_VERSION=1.11.7
 cd
 wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
@@ -26,29 +22,7 @@ cd nginx-${NGINX_VERSION}/
 make
 make install
 
-tee /usr/lib/systemd/system/nginx.service <<-EOF
-[Unit]
-Description=The nginx HTTP and reverse proxy server
-After=network.target remote-fs.target nss-lookup.target
-
-[Service]
-Type=forking
-PIDFile=/usr/local/nginx/logs/nginx.pid
-# Nginx will fail to start if /usr/local/nginx/logs/nginx.pid already exists but has the wrong
-# SELinux context. This might happen when running nginx -t from the cmdline.
-# https://bugzilla.redhat.com/show_bug.cgi?id=1268621
-ExecStartPre=/usr/bin/rm -f /usr/local/nginx/logs/nginx.pid
-ExecStartPre=/usr/local/nginx/sbin/nginx -t
-ExecStart=/usr/local/nginx/sbin/nginx
-ExecReload=/bin/kill -s HUP \$MAINPID
-KillSignal=SIGQUIT
-TimeoutStopSec=5
-KillMode=process
-PrivateTmp=true
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
+# setting nginx.service
+cp /vagrant/settings/nginx.service /usr/lib/systemd/system/nginx.service
 systemctl daemon-reload
 
